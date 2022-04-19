@@ -1,42 +1,11 @@
-"   _____  _             _           
-"  |  __ \| |           (_)          
-"  | |__) | |_   _  __ _ _ _ __  ___ 
-"  |  ___/| | | | |/ _` | | '_ \/ __|
-"  | |    | | |_| | (_| | | | | \__ \
-"  |_|    |_|\__,_|\__, |_|_| |_|___/
-"                   __/ |            
-"                  |___/            
+"--- Load plugins
+:source ~/.config/nvim/setup/plugins.vim
 
-call plug#begin("~/.vim/plugged")
-	Plug 'dracula/vim'
-	Plug 'scrooloose/nerdtree'
-	Plug 'ryanoasis/vim-devicons'
-	Plug 'phaazon/hop.nvim'
-	Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'preservim/nerdcommenter'
-    Plug 'nvim-telescope/telescope-file-browser.nvim'
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'hrsh7th/cmp-path'
-    Plug 'hrsh7th/cmp-cmdline'
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'onsails/lspkind-nvim'
-    Plug 'L3MON4D3/LuaSnip'
-    Plug 'saadparwaiz1/cmp_luasnip'
-    Plug 'steelsojka/pears.nvim'
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    Plug 'ur4ltz/surround.nvim'
-    Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-        Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-    if has('nvim') || has('patch-8.0.902')
-      Plug 'mhinz/vim-signify'
-    else
-      Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-    endif
-call plug#end()
+"--- Source statusline... pick pocketed from https://github.com/Matsuuu/
+:source ~/.config/nvim/setup/statusline.vim
+
+"--- Source Tabline
+:source ~/.config/nvim/setup/tabline.vim
 
 "   __  __                   _                 
 "  |  \/  |                 (_)                
@@ -47,19 +16,29 @@ call plug#end()
 "               | |   | |             __/ |    
 "               |_|   |_|            |___/     
 
+"--- Set the leader key
 let mapleader=" "
 
 "--- Add a new carrage return in normal mode
-nmap <leader><cr> o<Esc>
+nnoremap <leader><cr> o<Esc>
 
 "--- Fixing pasting in visual mode
 xnoremap p pgvy
+
+"--- Limit the number of column
+"set colorcolumn=100
+
+"--- Smart Indent
+set smartindent
+
+"--- Making G work better
+nmap G Gzz
 
 "--- Select word
 inoremap <C-w> <Esc>viw
 
 "--- Quit VIM
-nnoremap <leader>q <cmd> :q <cr>
+nnoremap <leader>q <cmd>:q <cr>
 
 "--- Better ESC (the only way to escape)
 inoremap jk <esc>
@@ -67,6 +46,7 @@ nnoremap <C-f> /
 inoremap <C-f> <Esc>/
 
 "--- Save and source your config file (while you have it open)
+"--- :source $MYVIMRC
 nnoremap <leader>rr <cmd>:w <cr> :source %<cr>
 
 "--- Open the init.vim config file
@@ -117,7 +97,8 @@ let g:NERDTreeHighlightCursorline = 1
 
 "--- SET SOME VARS
 set fillchars=eob:\ 
-"Turn on line numbers 
+
+"--- Turn on line numbers 
 set "number"
 
 "--- Auto close tag filetypes
@@ -126,7 +107,7 @@ let g:closetag_filenames = '*.html,*.xhtml,*.js,*.jsx,javascript,*.ts,*.tsx,type
 "--- Use system clipboard
 set clipboard=unnamedplus
 
-"--- Spaces & Tabs {{{
+"--- Spaces & Tab
 set tabstop=4       " number of visual spaces per TAB
 set softtabstop=4   " number of spaces in tab when editing
 set shiftwidth=4    " number of spaces to use for autoindent
@@ -153,7 +134,7 @@ endfunction
 nnoremap <C-k> :call MoveParagraph('{', 'wzz')<CR>
 nnoremap <C-j> :call MoveParagraph('}', 'gezz')<CR>
 
-" --- Set up Telescope
+"--- Set up Telescope
 :lua require("telescope").setup()
 :lua require("telescope").load_extension "file_browser"
 
@@ -173,7 +154,7 @@ tnoremap <Esc> <C-\><C-n>
 "--- Start terminal in insert mode
 au BufEnter * if &buftype == 'terminal' | :startinsert | endif
 
-"---  Open terminal on ctrl+n
+"---  Open terminal on ctrl + n
 function! OpenTerminal()
   split term://bash
   resize 10
@@ -190,6 +171,9 @@ endfunction
 
 "---  Pears setup
 :lua require "pears".setup()
+
+"--- Colorizer setup"
+lua require'colorizer'.setup()
 
 lua <<EOF
 -- Mappings.
@@ -295,12 +279,6 @@ require'surround'.setup {
 }
 EOF
 
-"--- Some stuff a I picked up from https://github.com/Matsuuu/
-"--- Source statusline
-source ~/.config/nvim/setup/statusline.vim
-
-"--- Source statusline
-source ~/.config/nvim/setup/tabline.vim
 
 if has("nvim")
   au TermOpen * tnoremap <Esc> <c-\><c-n>
