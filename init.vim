@@ -20,13 +20,10 @@
 let mapleader=" "
 
 "--- Add a new carrage return in normal mode
-nnoremap <leader><cr> o<Esc>
+nnoremap <cr> o<Esc>
 
 "--- Fixing pasting in visual mode
 xnoremap p pgvy
-
-"--- Limit the number of column
-"set colorcolumn=100
 
 "--- Smart Indent
 set smartindent
@@ -37,17 +34,27 @@ nmap G Gzz
 "--- Select word
 inoremap <C-w> <Esc>viw
 
+"--- Emacs basics movement in insert mode
+inoremap <C-A> <Home>
+inoremap <C-B> <Left>
+inoremap <C-E> <End>
+inoremap <C-F> <Right>
+
 "--- Quit VIM
 nnoremap <leader>q <cmd>:q <cr>
 
 "--- Better ESC (the only way to escape)
 inoremap jk <esc>
-nnoremap <C-f> /
-inoremap <C-f> <Esc>/
+
+"--- Search mapped 
+"nnoremap <C-f> /
+"inoremap <C-f> <Esc>/
+
 
 "--- Save and source your config file (while you have it open)
 "--- :source $MYVIMRC
-nnoremap <leader>rr <cmd>:w <cr> :source %<cr>
+nnoremap <leader>rr <cmd>:w <cr>:source $MYVIMRC<cr>
+nnoremap <leader>r <cmd>:w <cr> :!npm run start<cr>
 
 "--- Open the init.vim config file
 nnoremap <leader>ee <cmd>:e ~/.config/nvim/init.vim<cr>
@@ -143,7 +150,7 @@ nnoremap <C-j> :call MoveParagraph('}', 'gezz')<CR>
 :lua vim.api.nvim_set_keymap('n', 'f', ":HopChar1<CR>", {})
 ":lua vim.api.nvim_set_keymap('n', 's', ":HopWordCurrentLine<CR>", {})
 :lua vim.api.nvim_set_keymap('n', '<leader>l', ":HopLineStart<CR>", {})
-:lua vim.api.nvim_set_keymap('n', 'w', ":HopWordCurrentLine<CR>", {})
+:lua vim.api.nvim_set_keymap('n', '<leader>w', ":HopWordCurrentLine<CR>", {})
 
 "--- Automaticaly close NVIM if NERDTree is only thing left open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -195,7 +202,6 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
@@ -253,7 +259,7 @@ require'nvim-treesitter.configs'.setup {
     incremental_selection = {
         enable = true,
         keymaps = {
-            init_selection = "<CR>",
+            init_selection = "<leader>s",
             scope_incremental = "<CR>",
             node_incremental = "<TAB>",
             node_decremental = "<S-TAB>",
@@ -279,7 +285,6 @@ require'surround'.setup {
 }
 EOF
 
-
 if has("nvim")
   au TermOpen * tnoremap <Esc> <c-\><c-n>
   au FileType fzf tunmap <Esc>
@@ -291,3 +296,24 @@ endif
 
 syntax enable
 colorscheme dracula
+
+"green="#8aff80"
+"yellow="#ffff80"
+"pink="#ff80bf"
+"purple="#9580ff"
+"cyan="#80ffea"
+"orange="#ffca80"
+"red="#ff9580"
+
+" Set curserLine only on current window
+set cursorline
+"autocmd WinEnter * setlocal cursorline
+"autocmd WinLeave * setlocal nocursorline
+
+" Default Colors for CursorLine
+highlight CursorLine ctermbg=White  guibg=#232530
+highlight CursorLineNr ctermfg=White cterm=bold guifg=#ffffff
+
+" Change Color when entering Insert Mode
+autocmd InsertEnter * highlight CursorLine ctermbg=None guibg=None
+autocmd InsertLeave * highlight CursorLine ctermbg=White guibg=#232530
