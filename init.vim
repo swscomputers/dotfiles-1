@@ -2,10 +2,10 @@
 :source ~/.config/nvim/setup/plugins.vim
 
 "--- Source statusline... pick pocketed from https://github.com/Matsuuu/
-:source ~/.config/nvim/setup/statusline.vim
+":source ~/.config/nvim/setup/statusline.vim
 
 "--- Source Tabline
-:source ~/.config/nvim/setup/tabline.vim
+":source ~/.config/nvim/setup/tabline.vim
 
 "   __  __                   _                 
 "  |  \/  |                 (_)                
@@ -19,13 +19,28 @@
 "--- Set the leader key
 let mapleader=" "
 
+set timeoutlen=300
+
+"--- Hold indent in visual mode
+xnoremap < <gv
+xnoremap > >gv
+
+"-- Move text up and down
+nnoremap <M-j> :m .+1<CR>==
+nnoremap <M-k> :m .-2<CR>==
+inoremap <M-j> <Esc>:m .+1<CR>==gi
+inoremap <M-k> <Esc>:m .-2<CR>==gi
+vnoremap <M-j> :move '>+1<CR>gv-gv
+vnoremap <M-k> :move '<-2<CR>gv-gv
+
 "--- Add a new carrage return in normal mode
 nnoremap <cr> o<Esc>
 
 "--- Fixing pasting in visual mode
 xnoremap p pgvy
+"xnoremap silent p _dP
 
-"--- Smart Indent
+"--- Smart Inden
 set smartindent
 
 "--- Making G work better
@@ -43,6 +58,9 @@ inoremap <C-F> <Right>
 "--- Quit VIM
 nnoremap <leader>q <cmd>:q <cr>
 
+"--- Samve the current file
+nnoremap <leader>sf <cmd>:w <cr>
+
 "--- Better ESC (the only way to escape)
 inoremap jk <esc>
 
@@ -51,13 +69,13 @@ inoremap jk <esc>
 "inoremap <C-f> <Esc>/
 
 
-"--- Save and source your config file (while you have it open)
+"--- Save and s400ce your config file (while you have it open)
 "--- :source $MYVIMRC
 nnoremap <leader>rr <cmd>:w <cr>:source $MYVIMRC<cr>
-nnoremap <leader>r <cmd>:w <cr> :!npm run start<cr>
+nnoremap <leader>rs <cmd>:w <cr> :!npm run start<cr>
 
 "--- Open the init.vim config file
-nnoremap <leader>ee <cmd>:e ~/.config/nvim/init.vim<cr>
+nnoremap <leader>fc <cmd>:e ~/.config/nvim<cr>
 
 "--- Tab bindings
 nnoremap tt :tabnext<CR>
@@ -73,10 +91,11 @@ nnoremap <leader>n <cmd>:set number!<cr>
 
 "--- Telescope bindings
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fs <cmd>Telescope grep_string<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fg <cmd>Telescope grep_string<cr>
+nnoremap <leader>fl <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fs <cmd>Telescope lsp_document_symbols<cr>
 
 "--- Move lines up and down, not ready for prime time
 "--- To the end of the bench!
@@ -124,7 +143,7 @@ set copyindent      " copy indent from the previous line
 
 "--- Current theme controls
 let g:dracula_colorterm = 1
-nnoremap <SPACE> <Nop>
+"nnoremap <SPACE> <Nop>
 set updatetime=100
 filetype plugin on
 
@@ -148,9 +167,7 @@ nnoremap <C-j> :call MoveParagraph('}', 'gezz')<CR>
 "--- Setup hop
 :lua require'hop'.setup()
 :lua vim.api.nvim_set_keymap('n', 'f', ":HopChar1<CR>", {})
-":lua vim.api.nvim_set_keymap('n', 's', ":HopWordCurrentLine<CR>", {})
-:lua vim.api.nvim_set_keymap('n', '<leader>l', ":HopLineStart<CR>", {})
-:lua vim.api.nvim_set_keymap('n', '<leader>w', ":HopWordCurrentLine<CR>", {})
+:lua vim.api.nvim_set_keymap('n', '<leader>hl', ":HopLineStart<CR>", {})
 
 "--- Automaticaly close NVIM if NERDTree is only thing left open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -186,10 +203,10 @@ lua <<EOF
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
-vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+--- vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+--- vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+--- vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+--- vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -317,3 +334,43 @@ highlight CursorLineNr ctermfg=White cterm=bold guifg=#ffffff
 " Change Color when entering Insert Mode
 autocmd InsertEnter * highlight CursorLine ctermbg=None guibg=None
 autocmd InsertLeave * highlight CursorLine ctermbg=White guibg=#232530
+
+augroup highlight_yank
+    autocmd!
+    au TextYankPost * silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=700})
+augroup END
+
+lua <<EOF
+  local wk = require("which-key")
+wk.register({
+  ["<leader>"] = {
+    f = {
+      name = "+Files/Find",
+      f = { "File Git file" },
+      b = { "Find in buffer" },
+      l = { "Live Grep" },
+      g = { "Grep String" },
+      h = { "Help Tags" },
+      s = { "Find Symbols" },
+      c = { "Open Config" },
+    },
+    s = {
+        name = "Text Select [Save Commands]",
+        f = "Save File",
+    },
+    b = {"Tree Toggle"},
+    e = {
+        name = "Misc",
+        e = { "Open Config"},
+    },
+    l = { "Word Hope Line"},
+    r = {
+        name = "Commands",
+        s = "NPM Run Start",
+        r = "Reload Config",
+    },
+    q = { "Quit VIM"},
+    n = { "Set Numbers"},
+  },
+})
+EOF
