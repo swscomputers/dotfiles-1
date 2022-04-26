@@ -1,11 +1,6 @@
+:lua vim.opt.termguicolors = true
 "--- Load plugins
 :source ~/.config/nvim/setup/plugins.vim
-
-"--- Source statusline... pick pocketed from https://github.com/Matsuuu/
-":source ~/.config/nvim/setup/statusline.vim
-
-"--- Source Tabline
-":source ~/.config/nvim/setup/tabline.vim
 
 "   __  __                   _                 
 "  |  \/  |                 (_)                
@@ -19,13 +14,11 @@
 "--- Set the leader key
 let mapleader=" "
 
-set timeoutlen=300
-
 "--- Hold indent in visual mode
 xnoremap < <gv
 xnoremap > >gv
 
-"-- Move text up and down
+"--- Move text up and down
 nnoremap <M-j> :m .+1<CR>==
 nnoremap <M-k> :m .-2<CR>==
 inoremap <M-j> <Esc>:m .+1<CR>==gi
@@ -38,10 +31,6 @@ nnoremap <cr> o<Esc>
 
 "--- Fixing pasting in visual mode
 xnoremap p pgvy
-"xnoremap silent p _dP
-
-"--- Smart Inden
-set smartindent
 
 "--- Making G work better
 nmap G Gzz
@@ -58,20 +47,19 @@ inoremap <C-F> <Right>
 "--- Quit VIM
 nnoremap <leader>q <cmd>:q <cr>
 
-"--- Samve the current file
+"--- Save the current file
 nnoremap <leader>sf <cmd>:w <cr>
 
 "--- Better ESC (the only way to escape)
 inoremap jk <esc>
 
-"--- Search mapped 
-"nnoremap <C-f> /
-"inoremap <C-f> <Esc>/
+"--- Esc to hide highlight after search
+map <silent> <esc> :noh <CR>
 
-
-"--- Save and s400ce your config file (while you have it open)
-"--- :source $MYVIMRC
+"--- Save and source your config file (while you have it open)
 nnoremap <leader>rr <cmd>:w <cr>:source $MYVIMRC<cr>
+
+"--- Run the npm run start command 
 nnoremap <leader>rs <cmd>:w <cr> :!npm run start<cr>
 
 "--- Open the init.vim config file
@@ -85,22 +73,13 @@ nnoremap tn :tabnew<CR>
 "--- Toggle the line numbers
 nnoremap <leader>n <cmd>:set number!<cr>
 
-"--- Clear search by pressing enter 
-"--- But I need more tweaks cause I hate search on VIM
-"--- nnoremap <CR> :noh<CR><CR>
-
 "--- Telescope bindings
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope grep_string<cr>
 nnoremap <leader>fl <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fs <cmd>Telescope lsp_document_symbols<cr>
-
-"--- Move lines up and down, not ready for prime time
-"--- To the end of the bench!
-"--- nmap n :m +1<CR>
-"--- nmap m :m -2<CR>
+noremap <leader>fs <cmd>Telescope lsp_document_symbols<cr>
 
 "--- Use alt + hjkl to move between split/vsplit panels
 tnoremap <A-h> <C-\><C-n><C-w>h
@@ -121,11 +100,21 @@ let g:NERDTreeStatusline = ''
 let NERDTreeQuitOnOpen = 1
 let g:NERDTreeHighlightCursorline = 1
 
-"--- SET SOME VARS
+"--- Set some vars
+set timeoutlen=300
+
+"--- Some search options
+set ignorecase
+set smartcase
+
+"--- Smart Indent
+set smartindent
+
+"--- Not sure what this does, please tell me
 set fillchars=eob:\ 
 
 "--- Turn on line numbers 
-set "number"
+set number
 
 "--- Auto close tag filetypes
 let g:closetag_filenames = '*.html,*.xhtml,*.js,*.jsx,javascript,*.ts,*.tsx,typescript,vue,*.vue'
@@ -143,7 +132,6 @@ set copyindent      " copy indent from the previous line
 
 "--- Current theme controls
 let g:dracula_colorterm = 1
-"nnoremap <SPACE> <Nop>
 set updatetime=100
 filetype plugin on
 
@@ -178,12 +166,6 @@ tnoremap <Esc> <C-\><C-n>
 "--- Start terminal in insert mode
 au BufEnter * if &buftype == 'terminal' | :startinsert | endif
 
-"---  Open terminal on ctrl + n
-function! OpenTerminal()
-  split term://bash
-  resize 10
-endfunction
-
 "   _____                  _              
 "  |  __ \                (_)             
 "  | |__) |___  __ _ _   _ _ _ __ ___ ___ 
@@ -197,17 +179,12 @@ endfunction
 :lua require "pears".setup()
 
 "--- Colorizer setup"
-lua require'colorizer'.setup()
+:lua require'colorizer'.setup()
 
 lua <<EOF
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
---- vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
---- vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
---- vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
---- vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -322,16 +299,14 @@ colorscheme dracula
 "orange="#ffca80"
 "red="#ff9580"
 
-" Set curserLine only on current window
+"--- Set curserLine only on current window
 set cursorline
-"autocmd WinEnter * setlocal cursorline
-"autocmd WinLeave * setlocal nocursorline
 
-" Default Colors for CursorLine
+"--- Default Colors for CursorLine
 highlight CursorLine ctermbg=White  guibg=#232530
 highlight CursorLineNr ctermfg=White cterm=bold guifg=#ffffff
 
-" Change Color when entering Insert Mode
+"--- Change Color when entering Insert Mode
 autocmd InsertEnter * highlight CursorLine ctermbg=None guibg=None
 autocmd InsertLeave * highlight CursorLine ctermbg=White guibg=#232530
 
@@ -341,7 +316,7 @@ augroup highlight_yank
 augroup END
 
 lua <<EOF
-  local wk = require("which-key")
+local wk = require("which-key")
 wk.register({
   ["<leader>"] = {
     f = {
@@ -374,3 +349,4 @@ wk.register({
   },
 })
 EOF
+
