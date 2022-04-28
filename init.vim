@@ -1,4 +1,6 @@
+
 :lua vim.opt.termguicolors = true
+
 "--- Load plugins
 :source ~/.config/nvim/setup/plugins.vim
 
@@ -14,6 +16,9 @@
 "--- Set the leader key
 let mapleader=" "
 
+"--- Select all
+nnoremap <leader>a ggVG
+
 "--- Hold indent in visual mode
 xnoremap < <gv
 xnoremap > >gv
@@ -27,7 +32,10 @@ vnoremap <M-j> :move '>+1<CR>gv-gv
 vnoremap <M-k> :move '<-2<CR>gv-gv
 
 "--- Add a new carrage return in normal mode
+"--- TODO: want to evntually map shift <cr> when possible
 nnoremap <cr> o<Esc>
+:autocmd CmdwinEnter * nnoremap <CR> <CR>
+:autocmd BufReadPost quickfix nnoremap <CR> <CR>
 
 "--- Fixing pasting in visual mode
 xnoremap p pgvy
@@ -54,7 +62,7 @@ nnoremap <leader>sf <cmd>:w <cr>
 inoremap jk <esc>
 
 "--- Esc to hide highlight after search
-map <silent> <esc> :noh <CR>
+nnoremap <silent> <esc> :noh <CR>
 
 "--- Save and source your config file (while you have it open)
 nnoremap <leader>rr <cmd>:w <cr>:source $MYVIMRC<cr>
@@ -350,3 +358,10 @@ wk.register({
 })
 EOF
 
+" Colors in tmux
+if exists('$TMUX')
+    let &t_8f = "<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "<Esc>[48;2;%lu;%lu;%lum"
+endif
+
+set termguicolors
